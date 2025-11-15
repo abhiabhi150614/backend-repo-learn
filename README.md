@@ -35,7 +35,84 @@ erDiagram
     
     QUIZZES ||--o{ QUIZ_SUBMISSIONS : receives
     
+    JOBS ||--o{ CANDIDATE_MATCHES : generates
+    
+    USERS ||--o{ RECRUITER_INTERACTIONS : participates
+    USERS ||--o{ CANDIDATE_MATCHES : matched
+    
+    JOB_POSTINGS ||--o{ CANDIDATE_MATCHES : for_position
+    
+    CANDIDATE_MATCHES {
+        int id PK
+        int recruiter_id FK
+        int job_id FK
+        int candidate_id FK
+        string match_score
+        jsonb match_reasons
+        string status
+        datetime created_at
+        datetime updated_at
+    }
+    
     USERS {
+        int id PK
+        string email UK
+        string hashed_password
+        string google_id UK
+        string google_email
+        string google_name
+        string google_picture
+        string google_access_token
+        string google_refresh_token
+        boolean is_google_authenticated
+        string user_type
+        string phone_number
+        boolean phone_verified
+        datetime created_at
+        int created_by_recruiter_id FK
+        string source
+        string linkedin_connection_id
+        json linkedin_profile_data
+        datetime linkedin_connected_at
+        string github_connection_id
+        json github_profile_data
+        datetime github_connected_at
+        string twitter_connection_id
+        json twitter_profile_data
+        datetime twitter_connected_at
+        int current_plan_id
+        int current_month_index
+        int current_day
+    }
+    
+    RECRUITER_INTERACTIONS {
+        int id PK
+        int recruiter_id FK
+        int candidate_id FK
+        string interaction_type
+        jsonb details
+        text notes
+        string status
+        datetime created_at
+        datetime updated_at
+    }
+    
+    JOB_POSTINGS {
+        int id PK
+        int recruiter_id FK
+        string title
+        text description
+        jsonb requirements
+        jsonb skills
+        string location
+        int salary_min
+        int salary_max
+        boolean is_active
+        datetime created_at
+        datetime updated_at
+    }
+    
+    CANDIDATE_MATCHES {
         int id PK
         string email UK
         string hashed_password
