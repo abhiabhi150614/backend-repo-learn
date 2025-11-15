@@ -11,34 +11,221 @@
 ## 📊 Entity Relationship Diagram
 
 ```mermaid
+%%{init: {'theme':'dark'}}%%
 erDiagram
     USERS ||--o| ONBOARDING : has
     USERS ||--o{ LEARNING_PLANS : creates
-    USERS ||--o{ LEARNING_PATHS : tracks
-    USERS ||--o{ DAY_PROGRESS : monitors
+    USERS ||--o{ LEARNING_PATHS : enrolls
+    USERS ||--o{ DAY_PROGRESS : tracks
     USERS ||--o{ QUIZZES : takes
     USERS ||--o{ QUIZ_SUBMISSIONS : submits
     USERS ||--o{ YOUTUBE_SCHEDULES : schedules
+    USERS ||--o{ JOBS : posts
+    USERS ||--o{ SHORTLISTS : manages
+    USERS ||--o{ EMAIL_APPLICATIONS : receives
     USERS ||--o| STUDENT_PROFILE_SUMMARY : has
     USERS ||--o| CANDIDATE_VECTOR : has
-    USERS ||--o{ JOBS : posts
-    USERS ||--o{ SHORTLISTS : creates
-    USERS ||--o{ EMAIL_APPLICATIONS : receives
     
     LEARNING_PLANS ||--o{ LEARNING_PATHS : contains
+    LEARNING_PLANS ||--o{ DAY_PROGRESS : tracks
     LEARNING_PLANS ||--o{ QUIZZES : includes
-    LEARNING_PLANS ||--o{ QUIZ_SUBMISSIONS : tracks
-    LEARNING_PLANS ||--o{ DAY_PROGRESS : monitors
+    LEARNING_PLANS ||--o{ QUIZ_SUBMISSIONS : records
     
     JOBS ||--o{ SHORTLISTS : has
-    JOBS }o--|| USERS : posted_by
     
-    SHORTLISTS }o--|| USERS : recruiter
-    SHORTLISTS }o--|| USERS : student
-    SHORTLISTS }o--|| JOBS : for_job
+    QUIZZES ||--o{ QUIZ_SUBMISSIONS : receives
     
-    EMAIL_APPLICATIONS }o--|| USERS : recruiter
-    EMAIL_APPLICATIONS }o--o| USERS : student
+    USERS {
+        int id PK
+        string email UK
+        string hashed_password
+        string google_id UK
+        string google_email
+        string google_name
+        string google_picture
+        string google_access_token
+        string google_refresh_token
+        boolean is_google_authenticated
+        string user_type
+        string phone_number
+        boolean phone_verified
+        datetime created_at
+        int created_by_recruiter_id FK
+        string source
+        string linkedin_connection_id
+        json linkedin_profile_data
+        datetime linkedin_connected_at
+        string github_connection_id
+        json github_profile_data
+        datetime github_connected_at
+        string twitter_connection_id
+        json twitter_profile_data
+        datetime twitter_connected_at
+        int current_plan_id
+        int current_month_index
+        int current_day
+    }
+    
+    ONBOARDING {
+        int id PK
+        int user_id FK
+        string name
+        string grade
+        jsonb career_goals
+        jsonb current_skills
+        string time_commitment
+    }
+    
+    LEARNING_PLANS {
+        int id PK
+        int user_id FK
+        string title
+        int total_years
+        jsonb plan
+        datetime created_at
+        datetime updated_at
+    }
+    
+    LEARNING_PATHS {
+        int id PK
+        int plan_id FK
+        int user_id FK
+        int global_month_index
+        int year_number
+        int month_of_year
+        string title
+        string status
+        int current_day
+        int days_completed
+        int total_days
+        datetime started_at
+        datetime completed_at
+        datetime last_activity_at
+        json days_data
+        datetime created_at
+        datetime updated_at
+    }
+    
+    DAY_PROGRESS {
+        int id PK
+        int user_id FK
+        int plan_id FK
+        int month_index
+        int day_number
+        string status
+        datetime started_at
+        datetime completed_at
+        int quiz_score
+        int quiz_attempts
+        int best_score
+        boolean content_viewed
+        int time_spent
+        boolean can_proceed
+        datetime created_at
+        datetime updated_at
+    }
+    
+    QUIZZES {
+        int id PK
+        int user_id FK
+        int plan_id FK
+        int month_index
+        int day
+        string title
+        jsonb questions
+        int required_score
+        datetime created_at
+    }
+    
+    QUIZ_SUBMISSIONS {
+        int id PK
+        int user_id FK
+        int plan_id FK
+        int month_index
+        int day
+        int quiz_id FK
+        jsonb answers
+        jsonb question_results
+        int score
+        int passed
+        int attempt_number
+        int time_taken
+        datetime created_at
+    }
+    
+    YOUTUBE_SCHEDULES {
+        int id PK
+        int user_id FK
+        string playlist_id
+        string playlist_url
+        string playlist_title
+        int daily_minutes
+        jsonb schedule
+        string start_time
+        int duration_minutes
+        datetime created
+    }
+    
+    JOBS {
+        int id PK
+        int recruiter_id FK
+        string title
+        text description
+        json requirements
+        string location
+        string salary_range
+        string status
+        datetime created_at
+    }
+    
+    SHORTLISTS {
+        int id PK
+        int recruiter_id FK
+        int job_id FK
+        int student_id FK
+        int match_score
+        text notes
+        string status
+        datetime created_at
+        string source
+    }
+    
+    EMAIL_APPLICATIONS {
+        int id PK
+        int recruiter_id FK
+        string sender_email
+        string sender_name
+        string subject
+        text content
+        json attachments
+        datetime received_at
+        boolean processed
+        int student_id FK
+        int priority_score
+        json keywords_matched
+    }
+    
+    STUDENT_PROFILE_SUMMARY {
+        int id PK
+        int user_id FK
+        string summary_text
+        jsonb interests
+        jsonb skills_tags
+        jsonb vector
+        jsonb graph_neighbors
+        datetime created_at
+        datetime updated_at
+    }
+    
+    CANDIDATE_VECTOR {
+        int id PK
+        int user_id FK
+        jsonb vector
+        string summary_text
+        jsonb skills_tags
+        datetime created_at
+        datetime updated_at
+    }
 ```
 
 ---
