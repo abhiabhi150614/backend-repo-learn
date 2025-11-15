@@ -16,3 +16,6 @@ google-api-python-client
 composio-core
 twilio
 alembic
+pydantic[email]
+email-validator
+
