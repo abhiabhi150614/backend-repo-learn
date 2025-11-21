@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI,Response
 from fastapi.middleware.cors import CORSMiddleware
 from app.routes import auth, onboarding, youtube_schedule, chatbot, call_bot, voice_webhook, recruiter
 from app.routes import learning_plan, subplans
@@ -69,6 +69,6 @@ def read_root():
     return {"message": "EduAI Learning Platform API"}
 
 @app.get("/health")
-def health_check():
-    return {"status": "healthy"}
-
+def health_check(response: Response):
+    response.headers["Cache-Control"] = "no-store, no-cache, must-revalidate"
+    return {"status": "alive for ever"}
